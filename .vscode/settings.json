@@ -1,3 +1,8 @@
 {
-    "julia.executablePath": "C:\\Users\\royja\\AppData\\Local\\Programs\\Julia 1.5.3\\bin\\julia.exe"
+    "julia.executablePath": "C:\\Users\\royja\\AppData\\Local\\Programs\\Julia 1.5.3\\bin\\julia.exe",
+    "githubPullRequests.remotes": [
+        "origin",
+        "upstream",
+        "www.github.com/rj3838"
+    ]
 }
