@@ -1,4 +1,4 @@
-###otco.jl notebook ###
+###otco.jl ###
 # v0.12.16
 
 begin
