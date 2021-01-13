@@ -8,12 +8,15 @@ begin
 	using JSON3
 	using JSONTables
 	using HTTP
+	using CSV
 	#
 	#
 	const usageWeb = "https://api.octopus.energy/v1/electricity-meter-points/2000001578751/meters/20L3199388/consumption/"
 
 	const ratesWeb = "https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-AGILE-18-02-21-H/standard-unit-rates/"
+
 	const apiKey = "sk_live_yovlqmdq08rDBKBJ8jCZRdVe:"
+
 	temp = "Basic " * base64encode(apiKey)
 	usr = Dict("Authorization" => temp)
 	usageDF = DataFrame(consumption=Any[],
@@ -42,14 +45,14 @@ begin
 
 			if isa(usr, String)
 				nextString = string(nextString, usr)
-				println("usr string")
-				println(nextString)
+				#println("usr string")
+				#println(nextString)
 				returnData = String(HTTP.get(nextString).body)
 			else
 				returnData = String(HTTP.get(nextString; headers=usr).body)
 			end
 
-			println(returnData)
+			#println(returnData)
 			#print(HTTP.get(octopusWeb; headers=usr))
 			parsedData = JSON.parse(returnData::AbstractString; dicttype=Dict)
 			
@@ -59,19 +62,19 @@ begin
 			# curl -u "sk_live_yovlqmdq08rDBKBJ8jCZRdVe:" #"https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-#AGILE-18-02-21-H/standard-unit-rates/"
 
 			octopusData = JSON3.read(returnData)
-			print("results")
+			#print("results")
 			parsedData2 = DataFrame(jsontable(octopusData["results"]))
 			#parsedData3 = DataFrame(jsontable(consumptionData))
 			#nextDF = DataFrame((consumptionData))
 			nextString = octopusData["next"]
-			print("next string")
+			#print("next string")
 			#print(consumptionData)
 			#print(nextString)
 			#global octopusWeb = copy(df[1:1,[:next]])
 			#global octopusWeb = nextString
 			append!(localProcessDF, parsedData2)
 		#	octopusWeb = nothing
-			print("in while loop")
+			#print("in while loop")
 			end
 		print("after end while")
 		#processDF = DataFrame()
@@ -79,9 +82,11 @@ begin
 		end
 	end
 
-	#consumptionDF = fnWebCall(usageWeb, usr, usageDF)
+	consumptionDF = fnWebCall(usageWeb, usr, usageDF)
 
 	print("function exit")
+
+	CSV.write("consumption.csv", consumptionDF)
 
 	#print(consumptionDF)
 
@@ -90,42 +95,4 @@ begin
 	costsDF = fnWebCall(ratesWeb, usr, ratesDF)
 
 	#DataFrame.headers(costsDF)
-	#print(costsDF)
-
-
-
-	#end
-	# 
-	#while !isnothing(octopusWeb)
-			
-	# 	returnData = String(HTTP.get(octopusWeb; headers=usr).body)
-	# 	#print(HTTP.get(octopusWeb; headers=usr))
-		
-	# 	#println(returnData)
-		
-	# 	#println(typeof(JSON.parse(returnData::AbstractString; dicttype=Dict)))
-	# 	#parsedData = JSON.parse(returnData::AbstractString; dicttype=Dict)
-	# 	#print(parsedData)
-		
-	# 	#df = DataFrame(parsedData)
-		
-	# 	#curl -u "sk_live_yovlqmdq08rDBKBJ8jCZRdVe:" 			    #"https://api.octopus.energy/v1/electricity-meter-#points/2000001578751/meters/20L3199388/consumption/"
-		
-	# 	# unit rates
-	# 	# curl -u "sk_live_yovlqmdq08rDBKBJ8jCZRdVe:" #"https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-#AGILE-18-02-21-H/standard-unit-rates/"
-	# 	#using JSON3
-	# 	#using JSONTables
-	# 	consumptionData = JSON3.read(returnData)
-	# 	parsedData2 = DataFrame(jsontable(consumptionData["results"]))
-	# 	#parsedData3 = DataFrame(jsontable(consumptionData))
-	# 	#nextDF = DataFrame((consumptionData))
-	# 	nextString = consumptionData["next"]
-	# 	#print(consumptionData)
-	# 	#print(nextString)
-	# 	#global octopusWeb = copy(df[1:1,[:next]])
-	# 	global octopusWeb = nextString
-	# 	append!(processDF, parsedData2)
-# end
-	# #tail(DataFrame(processDF))
-
-
+	CSV.write("costs.csv", costsDF)
