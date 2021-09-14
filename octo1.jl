@@ -59,7 +59,7 @@ begin
 			end
 
 			#println(returnData)
-			#print(HTTP.get(octopusWeb; headers=usr))
+			print(HTTP.get(octopusWeb; headers=usr))
 			parsedData = JSON.parse(returnData::AbstractString; dicttype=Dict)
 
 			#curl -u "sk_live_yovlqmdq08rDBKBJ8jCZRdVe:" 			    #"https://api.octopus.energy/v1/electricity-meter-#points/2000001578751/meters/20L3199388/consumption/"
