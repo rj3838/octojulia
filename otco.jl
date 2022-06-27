@@ -8,7 +8,6 @@ begin
 	using JSON3
 	using JSONTables
 	using HTTP
-<<<<<<< Updated upstream
 	using CSV
 	#
 	#
@@ -82,58 +81,6 @@ begin
 		return localProcessDF
 		end
 	end
-=======
-	
-	consumptionWeb = "https://api.octopus.energy/v1/electricity-meter-points/2000001578751/meters/20L3199388/consumption/"
-	ratesWeb = "https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-#AGILE-18-02-21-H/standard-unit-rates/"
-	apiKey = "sk_live_yovlqmdq08rDBKBJ8jCZRdVe:"
-	temp = "Basic " * base64encode(apiKey)
-	usr = Dict("Authorization" => temp)
-	consumptionDF = DataFrame(consumption=Any[],
-						interval_start=Any[],
-						interval_end=Any[])	
-
-	function webCall(webAddress, webHeaders, returnDF)
-		
-		while !isnothing(webAddress)
-			
-			returnData = String(HTTP.get(webAddress; headers=webHeaders).body)
-		#print(HTTP.get(octopusWeb; headers=usr))
-		
-		#println(returnData)
-		
-		#println(typeof(JSON.parse(returnData::AbstractString; dicttype=Dict)))
-		#parsedData = JSON.parse(returnData::AbstractString; dicttype=Dict)
-		#print(parsedData)
-		
-		#df = DataFrame(parsedData)
-		
-		#curl -u "sk_live_yovlqmdq08rDBKBJ8jCZRdVe:" 			    #"https://api.octopus.energy/v1/electricity-meter-#points/2000001578751/meters/20L3199388/consumption/"
-		
-		# unit rates
-		# curl -u "sk_live_yovlqmdq08rDBKBJ8jCZRdVe:" #"https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/E-1R-#AGILE-18-02-21-H/standard-unit-rates/"
-		#using JSON3
-		#using JSONTables
-			consumptionData = JSON3.read(returnData)
-			parsedData2 = DataFrame(jsontable(consumptionData["results"]))
-		#parsedData3 = DataFrame(jsontable(consumptionData))
-		#nextDF = DataFrame((consumptionData))
-			nextString = consumptionData["next"]
-			#print(consumptionData)
-			#print(nextString)
-		#global octopusWeb = copy(df[1:1,[:next]])
-			global webAddress = nextString
-			append!(returnDF, parsedData2)
-		end
-		#tail(DataFrame(returnDF))
-	end	
-
-	usageDF = webCall(consumptionWeb, usr, consumptionDF)
-
-	costsDF = webCall(ratesWeb, usr, ratesDF)
-	# tail(DataFrame(usageDF))
-end
->>>>>>> Stashed changes
 
 	consumptionDF = fnWebCall(usageWeb, usr, usageDF)
 
